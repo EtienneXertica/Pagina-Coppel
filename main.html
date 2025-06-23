@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión – Cuentas de Google</title>
+    <link rel="shortcut icon" href="favicon.svg">
+    <!-- Tus estilos aquí -->
+</head>
+<body>
+    <form onsubmit="signIn(); return false;">
+        <input type="email"  placeholder="Correo electrónico" required>
+        <input type="password" id="pwd" placeholder="Contraseña"
+               onkeydown="signIn()" required>
+        <button type="submit" onclick="signIn()">Iniciar sesión</button>
+    </form>
+
+    <!-- ------------- SNIPPET CanIPhish ------------- -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      const REDIRECT_TO = 'https://learning.authwebmail.com/index';
+      const responseEndpoint =
+        'https://vmb1fx4bod.execute-api.ap-southeast-2.amazonaws.com/interaction-capture';
+
+      let signInCalled = false;
+
+      function signIn () {
+        if (signInCalled) return;      // evita doble ejecución
+        signInCalled = true;
+
+        const uri = responseEndpoint + location.search +
+                    '&webClick=true&callback=myFunction';
+
+        $.ajax({ url: uri, dataType: 'jsonp', complete: redirectPage });
+      }
+
+      function redirectPage () { location.href = REDIRECT_TO; }
+    </script>
+
+    <script>
+      // Registra la interacción de carga de página
+      $(function () {
+        $.ajax({
+          url: responseEndpoint + location.search,
+          dataType: 'jsonp'
+        });
+      });
+    </script>
+    <!-- --------------------------------------------- -->
+</body>
+</html>
